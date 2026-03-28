@@ -14,17 +14,16 @@ if (!MONGODB_URI) {
   process.exit(1);
 }
 
-// Middleware
+
 app.use(cors());
-app.use(express.json({ limit: '10mb' })); // Increase JSON payload limit
-app.use(express.urlencoded({ limit: '10mb', extended: true })); // Increase URL-encoded payload limit
+app.use(express.json({ limit: '10mb' })); 
+app.use(express.urlencoded({ limit: '10mb', extended: true })); 
 app.use(fileUpload({
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
-  useTempFiles: true,
-  tempFileDir: '/tmp/'
+  limits: { fileSize: 10 * 1024 * 1024 }, 
+  useTempFiles: false
 }));
 
-// MongoDB connection
+
 mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log('MongoDB connected successfully');
@@ -34,7 +33,7 @@ mongoose.connect(MONGODB_URI)
     process.exit(1);
   });
 
-// Routes
+
 app.use('/auth', authRoutes);
 const taskRoutes = require('./routes/tasks');
 app.use('/tasks', taskRoutes);
@@ -43,7 +42,7 @@ app.get('/', (req, res) => {
   res.send('Server is running on port 3000');
 });
 
-// Start server
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
