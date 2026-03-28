@@ -38,10 +38,20 @@ app.use('/auth', authRoutes);
 const taskRoutes = require('./routes/tasks');
 app.use('/tasks', taskRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Server is running on port 3000');
-});
+const path = require('path');
 
+if (process.env.NODE_ENV === 'production') {
+  const clientBuildPath = path.join(__dirname, '../client/cleint/dist');
+  app.use(express.static(clientBuildPath));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.send('Server is running on port 3000');
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
